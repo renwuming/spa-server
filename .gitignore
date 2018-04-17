@@ -1,0 +1,4 @@
+lib/config.js
+
+node_modules
+.DB_store
