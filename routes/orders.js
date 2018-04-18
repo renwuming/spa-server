@@ -3,6 +3,9 @@ var router = express.Router();
 var mid = require('../lib/middleware');
 const weixin = require('../lib/pay');
 const moment = require('moment');
+const xmlBuilder = new xml2js.Builder({
+  rootName: 'xml'
+});
 
 //model
 var Order = require('../Models/order')
@@ -118,18 +121,11 @@ router.post('/', async function (req, res, next) {
 
 router.post('/notify', async function (req, res, next) {
     const data = req.body,
-        {xml} = data,
-        {return_code, result_code, sign, out_trade_no} = xml;
-    // xml转json
-    // const xmlParser = new xml2js.Parser({
-    //     trim: true,
-    //     explicitArray: false
-    // });
-    var xmlBuilder = new xml2js.Builder({
-        rootName: 'xml'
-    });
+        {xml} = data;
+
     // 若成功收到回调消息
-    if (return_code == 'SUCCESS') {
+    if (xml && xml.return_code == 'SUCCESS') {
+      let {result_code, sign, out_trade_no} = xml;
         delete xml.sign;
         var _sign = weixin.sign.build(xml);
         // 若签名校验成功
