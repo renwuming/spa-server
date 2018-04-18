@@ -11,7 +11,9 @@ var orderSchema = new Schema({
   price: String,
   name: String,
   phoneNumber: String,
-  address: String
+  address: String,
+  tradeId: String,
+  payStatus: Boolean,
 })
 
 module.exports = mongoose.model('order',orderSchema)
