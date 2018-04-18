@@ -131,12 +131,10 @@ router.post('/notify', async function (req, res, next) {
         var _sign = weixin.sign.build(xml);
         // 若签名校验成功
         if (sign == _sign) {
-            const status = result_code == 'SUCCESS' ? 1 : 2;
-
             // 若支付成功
-            if(status===1){
+            if(result_code == 'SUCCESS'){
               // 更新数据库
-              Order.update({ tradeId: out_trade_no }, { payStatus: true });
+              Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
             }
 
             const result = {
@@ -144,7 +142,7 @@ router.post('/notify', async function (req, res, next) {
                 return_msg: 'OK'
             };
             const xml = xmlBuilder.buildObject(result);
-            console.log('支付回调返回成功', xml);
+            console.log('支付回调返回成功');
             res.send(xml);
         } else {
             // 若签名校验失败
@@ -153,7 +151,7 @@ router.post('/notify', async function (req, res, next) {
                 return_msg: '签名失败'
             };
             const xml = xmlBuilder.buildObject(result);
-            console.log('支付回调返回失败', xml);
+            console.log('支付回调返回失败');
             res.send(xml);
         }
     }
