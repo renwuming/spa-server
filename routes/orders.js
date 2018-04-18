@@ -134,7 +134,11 @@ router.post('/notify', async function (req, res, next) {
             // 若支付成功
             if(result_code == 'SUCCESS'){
               // 更新数据库
-              Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
+              try {
+                Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
+              } catch(e) {
+                console.log(e);
+              }
             }
 
             const result = {
