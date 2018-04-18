@@ -136,10 +136,7 @@ router.post('/notify', async function (req, res, next) {
             // 若支付成功
             if(status===1){
               // 更新数据库
-              Order.update(
-                { tradeId: out_trade_no },
-                { "$set": {"payStatus": true} }
-              );
+              Order.update({ tradeId: out_trade_no }, { payStatus: true });
             }
 
             const result = {
