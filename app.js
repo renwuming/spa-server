@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var WebSocketServer = require('ws').Server
+const xmlparser = require('express-xml-bodyparser');
 
 global.wss = new WebSocketServer({
   port: 8181
@@ -30,6 +31,7 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 app.use(logger('dev'));
+app.use(xmlparser);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
