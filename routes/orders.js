@@ -135,7 +135,7 @@ router.post('/notify', async function (req, res, next) {
             if(result_code == 'SUCCESS'){
               // 更新数据库
               try {
-                Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
+                await Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
               } catch(e) {
                 console.log(e);
               }
