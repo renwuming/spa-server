@@ -116,8 +116,8 @@ router.post('/', async function (req, res, next) {
 
 
 
-router.post('/notify', function*() {
-    const data = this.request.body,
+router.post('/notify', async function (req, res, next) {
+    const data = req.body,
         {xml} = data,
         {return_code, result_code, sign, out_trade_no} = xml;
     // xml转json
