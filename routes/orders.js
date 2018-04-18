@@ -3,6 +3,7 @@ var router = express.Router();
 var mid = require('../lib/middleware');
 const weixin = require('../lib/pay');
 const moment = require('moment');
+const xml2js = require('xml2js');
 const xmlBuilder = new xml2js.Builder({
   rootName: 'xml'
 });
