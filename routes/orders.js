@@ -10,6 +10,7 @@ const xmlBuilder = new xml2js.Builder({
 
 //model
 var Order = require('../Models/order')
+var User = require('../Models/usersInfo')
 
 
 global.wss.on('connection', function (ws) {
@@ -104,6 +105,10 @@ function toCents(n) {
   return parseInt(n*100);
 }
 
+function toYuan(n) {
+  return parseInt(n/100);
+}
+
 
 //添加订单
 router.post('/', async function (req, res, next) {
@@ -134,8 +139,7 @@ router.post('/notify', async function (req, res, next) {
 
     // 若成功收到回调消息
     if (xml && xml.return_code == 'SUCCESS') {
-      let {result_code, sign, out_trade_no} = xml;
-        delete xml.sign;
+      let {result_code, sign, out_trade_no, attach, openid, total_fee} = xml;
         var _sign = weixin.sign.build(xml);
         // 若签名校验成功
         if (sign == _sign) {
@@ -144,6 +148,9 @@ router.post('/notify', async function (req, res, next) {
               // 更新数据库
               try {
                 await Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
+                if(attach == 'recharge') {
+                  await User.update({ appid: openid }, { "$inc": {money: toYuan(total_fee) } });
+                }
               } catch(e) {
                 console.log(e);
               }
