@@ -35,7 +35,6 @@ router.post('/', async function(req, res, next) {
     return;
   }
   let data = { ...req.body, appid } 
-  console.log(data)
   var onePerson = new UsersInfo(data)
   onePerson.save((err)=>{
     if(err) {

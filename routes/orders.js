@@ -106,7 +106,7 @@ function toCents(n) {
 }
 
 function toYuan(n) {
-  return parseInt(n/100);
+  return parseFloat(n/100);
 }
 
 
