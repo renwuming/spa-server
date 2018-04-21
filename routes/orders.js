@@ -53,14 +53,13 @@ router.get('/find', async function(req, res, next) {
 })
 
 async function submitOrder(data) {
-  let {orderTime, createTime, orderStatus, server, price, name, phoneNumber, address, appid} = data;
-  const _tradeId = 'PM' + moment().format('YYYYMMDDHHmmssSSS');
+  let {orderTime, createTime, orderStatus, server, price, name, phoneNumber, address, appid, tradeId} = data;
   const notify_url = 'https://www.renwuming.cn/maidu/orders/notify';
   var order = {
     body: `脉度良子 - ${server}`,
     attach: server,
     openid: appid,
-    out_trade_no: _tradeId,
+    out_trade_no: tradeId,
     total_fee: toCents(data.price),
     trade_type: 'JSAPI',
     spbill_create_ip: '127.0.0.1',
@@ -71,7 +70,7 @@ async function submitOrder(data) {
 
   if (_order.return_code == 'SUCCESS' && _order.result_code == 'SUCCESS') {
     // 订单存入数据库
-    saveOrder(data, appid, _tradeId);
+    saveOrder(data, false);
 
     var jsPay = weixin.pay.toJsPay(_order);
 
@@ -87,12 +86,11 @@ async function submitOrder(data) {
   }
 }
 
-function saveOrder(data, openId, tradeId) {
-  data.payStatus = false;
+function saveOrder(data, payStatus) {
+  data.payStatus = payStatus;
   var oneOrder = new Order({
     ...data,
-    openId,
-    tradeId,
+    openId: data.appid,
   })
   oneOrder.save((err)=>{
     if(err) {
@@ -118,11 +116,18 @@ router.post('/', async function (req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
-  let data = req.body;
   let msg;
   try {
-    data.appid = appid;
-    msg = await submitOrder(data);
+    const tradeId = 'PM' + moment().format('YYYYMMDDHHmmssSSS');
+    let data = {...req.body, tradeId, appid},
+        userInfo = await User.find({appid}),
+        {price} = data;
+    if(userInfo&&userInfo.money >= price) { // 余额支付
+      await User.update({ appid }, { "$inc": {money: -price } });
+      saveOrder(data, true);
+    } else { // 调起支付
+      msg = await submitOrder(data);
+    }
   } catch(e) {
     console.log(e);
     res.send({error: e});
