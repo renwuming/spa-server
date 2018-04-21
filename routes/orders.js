@@ -35,7 +35,7 @@ global.wss.on('connection', function (ws) {
 
 // 获取所有的订单
 router.get('/', async function(req, res, next) {
-  let result = await Order.find({})
+  let result = await Order.find({payStatus: true})
   res.send(result)
 })
 
@@ -43,7 +43,11 @@ router.get('/', async function(req, res, next) {
 router.get('/find', async function(req, res, next) {
   let sessionid = req.headers.session
   let appid = await mid.getSessionBy(sessionid)
-  let result = await Order.find({openId: appid})
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
+  let result = await Order.find({openId: appid, payStatus: true})
   res.send(result)
 })
 
@@ -105,6 +109,10 @@ function toCents(n) {
 router.post('/', async function (req, res, next) {
   let sessionid = req.headers.session
   let appid = await mid.getSessionBy(sessionid)
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
   let data = req.body;
   let msg;
   try {
