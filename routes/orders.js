@@ -120,11 +120,15 @@ router.post('/', async function (req, res, next) {
   try {
     const tradeId = 'PM' + moment().format('YYYYMMDDHHmmssSSS');
     let data = {...req.body, tradeId, appid},
-        userInfo = await User.find({appid}),
+        userInfo = await User.findOne({appid}),
         {price} = data;
     if(userInfo&&userInfo.money >= price) { // 余额支付
       await User.update({ appid }, { "$inc": {money: -price } });
       saveOrder(data, true);
+      msg = {
+        success: true,
+        balancePay: true,
+      }
     } else { // 调起支付
       msg = await submitOrder(data);
     }
