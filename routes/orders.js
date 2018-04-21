@@ -12,13 +12,14 @@ const xmlBuilder = new xml2js.Builder({
 var Order = require('../Models/order')
 var User = require('../Models/usersInfo')
 
+const orderQuery = {payStatus: true, server: {$not: /^recharge$/}};
 
 global.wss.on('connection', function (ws) {
   console.log('client connected')
 
   var sendStockUpdates = async function (ws) {
       if (ws.readyState == 1) {
-        let result = await Order.find({})
+        let result = await Order.find(orderQuery);
         ws.send(JSON.stringify(result))
       }
   }
@@ -36,7 +37,7 @@ global.wss.on('connection', function (ws) {
 
 // 获取所有的订单
 router.get('/', async function(req, res, next) {
-  let result = await Order.find({payStatus: true, server: {$not: /^recharge$/}});
+  let result = await Order.find(orderQuery);
   res.send(result)
 })
 
@@ -48,7 +49,7 @@ router.get('/find', async function(req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
-  let result = await Order.find({openId: appid, payStatus: true, server: {$not: /^recharge$/}})
+  let result = await Order.find(orderQuery)
   res.send(result)
 })
 
