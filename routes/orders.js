@@ -139,8 +139,8 @@ router.post('/notify', async function (req, res, next) {
 
     // 若成功收到回调消息
     if (xml && xml.return_code == 'SUCCESS') {
-      delete xml.sign;
       let {result_code, sign, out_trade_no, attach, openid, total_fee} = xml;
+        delete xml.sign;
         var _sign = weixin.sign.build(xml);
         // 若签名校验成功
         if (sign == _sign) {
