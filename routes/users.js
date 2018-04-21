@@ -35,14 +35,22 @@ router.post('/', async function(req, res, next) {
     return;
   }
   let data = { ...req.body, appid } 
-  var onePerson = new UsersInfo(data)
-  onePerson.save((err)=>{
-    if(err) {
-       res.send(err)
-    } else {
-       res.send('success!')
+
+  try {
+    resdata = await UsersInfo.find({"appid": appid})
+    if(resdata.toString() === '') {
+      let onePerson = new UsersInfo(data)
+      onePerson.save((err)=>{
+        if(err) {
+          res.send(err)
+        } else {
+          res.send('success!')
+        }
+      })
     }
-  })
+  } catch (e) {
+    res.send('fail!')
+  }
 });
 
 //  update userinfo
