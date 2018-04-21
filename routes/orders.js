@@ -102,7 +102,7 @@ function saveOrder(data, openId, tradeId) {
 }
 
 function toCents(n) {
-  return parseInt(n*100);
+  return parseInt(n/100);
 }
 
 function toYuan(n) {
@@ -131,6 +131,11 @@ router.post('/', async function (req, res, next) {
   res.send(msg);
 });
 
+// 充3000送200
+function handleRecharge(value) {
+  if(value >= 3000 ) return value + 200;
+  else return value;
+}
 
 
 router.post('/notify', async function (req, res, next) {
@@ -150,7 +155,8 @@ router.post('/notify', async function (req, res, next) {
               try {
                 await Order.update({ tradeId: out_trade_no[0] }, { payStatus: true });
                 if(attach == 'recharge') {
-                  await User.update({ appid: openid }, { "$inc": {money: toYuan(total_fee) } });
+                  const value = handleRecharge(toYuan(total_fee));
+                  await User.update({ appid: openid }, { "$inc": {money: value } });
                 }
               } catch(e) {
                 console.log(e);
