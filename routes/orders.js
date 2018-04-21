@@ -36,7 +36,7 @@ global.wss.on('connection', function (ws) {
 
 // 获取所有的订单
 router.get('/', async function(req, res, next) {
-  let result = await Order.find({payStatus: true, server: {$not: /^recharge$/});
+  let result = await Order.find({payStatus: true, server: {$not: /^recharge$/}});
   res.send(result)
 })
 
