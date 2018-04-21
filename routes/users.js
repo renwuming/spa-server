@@ -9,6 +9,10 @@ var UsersInfo = require('../Models/usersInfo');
 router.get('/', async function(req,res,next) {
   let sessionid = req.headers.session
   let appid = await mid.getSessionBy(sessionid)
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
   let resdata;
   try {
     resdata = await UsersInfo.find({"appid": appid})
@@ -26,6 +30,10 @@ router.get('/', async function(req,res,next) {
 router.post('/', async function(req, res, next) {
   let sessionid = req.headers.session
   let appid =await mid.getSessionBy(sessionid)
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
   let data = { ...req.body, appid } 
   console.log(data)
   var onePerson = new UsersInfo(data)
@@ -42,6 +50,10 @@ router.post('/', async function(req, res, next) {
 router.put('/', async function(req, res, next) {
   let sessionid = req.headers.session
   let appid =await mid.getSessionBy(sessionid)
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
   let resdata = await UsersInfo.update({"appid": appid}, req.body)
   // console.log(resdata)
   res.send(resdata)
