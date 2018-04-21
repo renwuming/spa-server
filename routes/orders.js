@@ -102,7 +102,7 @@ function saveOrder(data, openId, tradeId) {
 }
 
 function toCents(n) {
-  return parseInt(n/100);
+  return parseInt(n*100);
 }
 
 function toYuan(n) {
