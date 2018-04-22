@@ -9,7 +9,8 @@ var userInfoSchema = new Schema({
   money: {type: Number},
   phoneNumber: {type: String},
   address: {type: String},
-  orderCount: Number
+  orderCount: Number,
+  gender: Number,
 })
 
 module.exports = mongoose.model('usersInfo',userInfoSchema)
