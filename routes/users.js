@@ -74,9 +74,14 @@ router.put('/secret', async function(req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
-  let resdata = await mid.decryptedData(req.body, sessionid);
-console.log(resdata)
-  // res.send(resdata)
+  try {
+    let resdata = await mid.decryptedData(req.body, sessionid);
+    res.send({data: resdata});
+  } catch(err) {
+    err = err.toString();
+    console.log(e);
+    res.send({error: err});
+  }
 })
 
 
