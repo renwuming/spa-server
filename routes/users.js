@@ -34,7 +34,7 @@ router.post('/', async function(req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
-  let data = { ...req.body, appid } 
+  let data = { ...req.body, appid }
 
   try {
     resdata = await UsersInfo.find({"appid": appid})
@@ -64,6 +64,19 @@ router.put('/', async function(req, res, next) {
   let resdata = await UsersInfo.update({"appid": appid}, req.body)
   // console.log(resdata)
   res.send(resdata)
+})
+
+//  update userinfo
+router.put('/secret', async function(req, res, next) {
+  let sessionid = req.headers.session
+  let appid =await mid.getSessionBy(sessionid)
+  if(!appid) {
+    res.json({errMsg: "sessionkey not found"});
+    return;
+  }
+  let resdata = await mid.decryptedData(req.body, sessionid);
+console.log(resdata)
+  // res.send(resdata)
 })
 
 
