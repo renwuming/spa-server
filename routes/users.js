@@ -79,7 +79,7 @@ router.put('/secret', async function(req, res, next) {
     res.send({data: resdata});
   } catch(err) {
     err = err.toString();
-    console.log(e);
+    console.log(err);
     res.send({error: err});
   }
 })
