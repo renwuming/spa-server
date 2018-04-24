@@ -14,6 +14,7 @@ var orderSchema = new Schema({
   address: String,
   tradeId: String,
   payStatus: Boolean,
+  orderImg: String,
 })
 
 module.exports = mongoose.model('order',orderSchema)
