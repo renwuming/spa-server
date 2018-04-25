@@ -49,6 +49,7 @@ router.get('/find', async function(req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
+  orderQuery.openId = appid;
   let result = await Order.find(orderQuery)
   res.send(result)
 })
