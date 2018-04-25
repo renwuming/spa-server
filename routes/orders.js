@@ -20,6 +20,7 @@ global.wss.on('connection', function (ws) {
   var sendStockUpdates = async function (ws) {
       if (ws.readyState == 1) {
         let result = await Order.find(orderQuery);
+//	console.log(JSON.stringify(result))
         ws.send(JSON.stringify(result))
       }
   }
@@ -49,8 +50,8 @@ router.get('/find', async function(req, res, next) {
     res.json({errMsg: "sessionkey not found"});
     return;
   }
-  orderQuery.openId = appid;
-  let result = await Order.find(orderQuery)
+  //orderQuery.openId = appid;
+  let result = await Order.find({...orderQuery, openId: appid})
   res.send(result)
 })
 
