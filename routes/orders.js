@@ -20,7 +20,6 @@ global.wss.on('connection', function (ws) {
   var sendStockUpdates = async function (ws) {
       if (ws.readyState == 1) {
         let result = await Order.find(orderQuery);
-//	console.log(JSON.stringify(result))
         ws.send(JSON.stringify(result))
       }
   }
