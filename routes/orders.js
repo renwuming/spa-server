@@ -124,7 +124,7 @@ router.post('/', async function (req, res, next) {
     let data = {...req.body, tradeId, appid},
         userInfo = await User.findOne({appid}),
         {price} = data;
-    if(userInfo&&userInfo.money >= price) { // 余额支付
+    if(userInfo&&userInfo.money >= price && req.body.server != 'recharge') { // 非充值订单，使用余额支付
       await User.update({ appid }, { "$inc": {money: -price } });
       saveOrder(data, true);
       msg = {
