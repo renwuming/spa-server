@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('../lib/config');
 const http = require("../lib/http");
-const redis = require('../lib/redis');
+const cache = require('../lib/cache');
 
 const middleware = require('../lib/middleware')
 let WXBizDataCrypt = require("../lib/WXBizDataCrypt");
@@ -22,7 +22,7 @@ router.get('/sessionkey', async function (req, res, next) {
     res.send(resData)
   } else {
     const sessionid = WXBizDataCrypt.randomKey()
-    redis.setSync(sessionid, resData)
+    cache.set(sessionid, resData)
     res.send({ thirdSession: sessionid})
   }
 })
