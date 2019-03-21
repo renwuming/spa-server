@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('../lib/config');
 const http = require("../lib/http");
-const cache = require('../lib/cache');
+const cache = require('../lib/cache')()
 
 const middleware = require('../lib/middleware')
 let WXBizDataCrypt = require("../lib/WXBizDataCrypt");
